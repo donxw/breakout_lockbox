@@ -13,6 +13,8 @@ Lockbox which will open when you win playing a game loaded on a TTGO_T_Display E
 
 **Assemble Control Box**
 
+Solder Servo Wires to TTGO T-Display ESP32
+
 ![TTGO_ServoPinConnect](https://user-images.githubusercontent.com/31633408/148669277-134af3f2-11be-4213-8575-100b4dfcf5f7.jpg)
 
 
