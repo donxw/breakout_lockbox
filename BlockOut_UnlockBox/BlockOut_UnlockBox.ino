@@ -1,23 +1,33 @@
-//Based on Volos breakout game
-// https://www.youtube.com/watch?v=N6V7ZJkhSbc&list=PLRCQZ78SXVWjVWOfMjREtLX2lKyB0Eh7J&index=5
-// Unlocks christmas box after winning level 1
+/* Christmas Gift Box - opens when game is successfully played
+   Unlocks christmas lockbox after winning level 1
 
-//240x135
+   References:
+   Based on Volos breakout game
+   https://www.youtube.com/watch?v=N6V7ZJkhSbc&list=PLRCQZ78SXVWjVWOfMjREtLX2lKyB0Eh7J&index=5
+
+   board:  ESP32 Dev Module | TTGO T-Display ESP32 with built in TFT Display
+   Getting started with TFT_eSPI library on a TTGO T-Display board:  https://www.youtube.com/watch?v=UE1mtlsxfKM&list=PLRCQZ78SXVWjVWOfMjREtLX2lKyB0Eh7J&index=6
+   Library Location:  https://github.com/Bodmer/TFT_eSPI or https://www.arduino.cc/reference/en/libraries/tft_espi/
+*/
+
+//TTGO TFT Setup:  135x250 pixel TFT
 #include <SPI.h>
 #include <TFT_eSPI.h> // Hardware-specific library
 TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
-#include "winner.h"  // winner splashscreen
 
-// main splashscreen - uncomment only one
-//#include "alex.h"  //15,60
-//#include "avery.h"
+// main splashscreen - uncomment only one.  These are 135x240 png files converted to C format using http://rinkydinkelectronics.com/t_imageconverter565.php
+#include "alex.h"  //15,60  Servo lock and unlock positions - obtain by experiment
+//#include "avery.h" //5, 55
 //#include "hana.h"  //25,75
-//#include "james.h"
+//#include "james.h"  //7, 55
 //#include "kev.h"
 //#include "lark.h"
-//#include "linz.h"
-#include "mel.h"  //0, 55
+//#include "linz.h"  //5,48
+//#include "mel.h"  //0, 55
 //#include "syd.h"  //16,60
+
+// splashscreen to display when level 1 is achieved and box opens
+#include "winner.h"  // winner splashscreen
 
 // Servo
 #include <ESP32Servo.h>
@@ -28,17 +38,18 @@ int UNLOCK = 55;
 // Recommended PWM GPIO pins on the ESP32 include 2,4,12-19,21-23,25-27,32-33
 int servoPin = 12;
 
+// TFT Colors
 #define TFT_GREY 0x5AEB
 #define lightblue 0x2D18
 #define orange 0xFB60
 #define purple 0xFB9B
-float ys = 1;
 
+// Variable used in the game
+float ys = 1;
 float x = random(30, 100); //coordinates of ball
 float y = 70;
 int ny = y; //coordinates of previous position
 int nx = x;
-
 float px = 45; //67 is the center position of the player
 int   pxn = px;
 int vrije[2] = {1, -1};
@@ -50,9 +61,14 @@ int level = 1;
 float amount[4] = {0.25, 0.50, 0.75, 1};
 float xs = amount[random(4)] * vrije[random(2)];
 int fase = 0;
+int pom = 0;
+int gameSpeed = 13000;  // higher number for slower ball
+
+// for debugging
+#define DEBUG 0
 
 /**********************************************************
-   SETUP
+  SETUP
 ***********************************************************/
 void setup(void) {
   pinMode(0, INPUT);
@@ -61,22 +77,27 @@ void setup(void) {
   tft.setRotation(0);
   tft.setSwapBytes(true);
 
-  //Show splashscreen
+  // show splashscreen
   tft.pushImage(0, 0,  135, 240, bootlogo);  // show boot logo
-  //tft.pushImage(0, 0,  135, 240, winner);  // test winner logo
+#if DEBUG
+  delay(1000);
+  tft.pushImage(0, 0,  135, 240, winner);  // test winner logo
+  delay(1000);
+#endif
+
+  // setup servo
   myservo.setPeriodHertz(50);    // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
   // using default min/max of 1000us and 2000us
   // different servos may require different min/max settings
   // for an accurate 0 to 180 sweep
+#if DEBUG
+  myservo.write(UNLOCK);  // test unlock
+  delay(1000);
+#endif
   myservo.write(LOCK); // put servo on lock position
 
 }
-
-//float xstep = 1;
-//int spe = 0;
-int pom = 0;
-int gameSpeed = 13000;  // higher number for slower ball
 
 /**********************************************************
    LOOP
@@ -119,13 +140,13 @@ void loop() {
       ny = y;
       nx = x;
     }
-    
+
     if (int(px) != pxn) {
       tft.fillRect(pxn, 234, 24, 4, TFT_BLACK); //Delete Player
       pxn = px;
     }
 
-     //spe=spe+1; // comment out
+    //spe=spe+1; // comment out
 
     if (px >= 2 && px <= 109) {
       if (digitalRead(0) == 0)
@@ -133,14 +154,14 @@ void loop() {
       if (digitalRead(35) == 0)
         px = px + 1;
     }
-    
+
     if (px <= 3)
       px = 4;
 
     if (px >= 108)
       px = 107;
 
-    if (y > 232 && x > px && x < px + 24) { 
+    if (y > 232 && x > px && x < px + 24) {
       ys = ys * -1;
       xs = amount[random(4)] * vrije[random(2)];
     }
@@ -171,17 +192,15 @@ void loop() {
     if (x <= 4)
       xs = xs * -1.00;
 
-    for (int i = 0; i < 16; i++) //update blocks
-      tft.fillRect(enx[i], eny[i], 20, 4, enc[i]);
+    // update blocks
+    for (int i = 0; i < 16; i++) tft.fillRect(enx[i], eny[i], 20, 4, enc[i]);
 
-    tft.fillEllipse(int(x), y, 2, 2, TFT_WHITE); // draw ball
+    // draw ball
+    tft.fillEllipse(int(x), y, 2, 2, TFT_WHITE);
 
-    //if(spe>10){ //comment out
-    //change coordinates of ball
+    // change coordinates of ball
     y = y + ys;
     x = x + xs;
-    //spe=0;  //comment out
-    //}  //comment out
 
     tft.fillRect(px, 234, 24, 4, TFT_WHITE);
 
@@ -190,8 +209,8 @@ void loop() {
 
     delayMicroseconds(gameSpeed);
   }
-  
-  if (fase == 2)
+
+  if (fase == 2)  // game over
   {
     tft.fillScreen(TFT_BLACK);
     tft.setCursor(13, 103, 2);
