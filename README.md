@@ -29,5 +29,8 @@ Close up case
 
 ![IMG_0037 (2) (Small)](https://user-images.githubusercontent.com/31633408/148670440-c62eda9e-bd54-4180-bef2-4df3ff5f2fd1.JPG)
 
+Completed game case
+
+![IMG_0038 (Small)](https://user-images.githubusercontent.com/31633408/148670472-34a55f00-03e8-47be-81d3-4dbb7377b728.JPG)
 
 
