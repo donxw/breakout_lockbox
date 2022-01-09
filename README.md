@@ -35,10 +35,16 @@ Completed game case
 
 **Assemble Lockbox**
 
+Assemble servo and wire connector.  Hot glue connector in place.
+
 ![IMG_0042 (Small)](https://user-images.githubusercontent.com/31633408/148670512-ff845567-e154-49a7-9450-fc254eb5a1a7.JPG)
 
+Assemble box and lid.
 
+![IMG_0044 (Small)](https://user-images.githubusercontent.com/31633408/148670584-463e6c2e-a143-48b0-8ba9-7add192a4160.JPG)
 
+Install Servo Connector in back.
 
+![IMG_0045 (Small)](https://user-images.githubusercontent.com/31633408/148670637-756b203d-2501-48a5-b13c-68d7d2071b3e.JPG)
 
 
