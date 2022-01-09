@@ -21,4 +21,9 @@ Add switch to battery wire
 
 ![IMG_0032 (Small)](https://user-images.githubusercontent.com/31633408/148670230-7b1e0a82-2239-4194-abd9-619c5afd190e.JPG)
 
+Pack into game case
+
+![IMG_0034 (2) (Small)](https://user-images.githubusercontent.com/31633408/148670354-b5c4759e-69de-4962-90b6-6cd70ce64744.JPG)
+
+
 
