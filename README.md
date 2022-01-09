@@ -17,4 +17,8 @@ Solder Servo Wires to TTGO T-Display ESP32
 
 ![TTGO_ServoPinConnect](https://user-images.githubusercontent.com/31633408/148669277-134af3f2-11be-4213-8575-100b4dfcf5f7.jpg)
 
+Add switch to battery wire
+
+![IMG_0032 (Small)](https://user-images.githubusercontent.com/31633408/148670230-7b1e0a82-2239-4194-abd9-619c5afd190e.JPG)
+
 
