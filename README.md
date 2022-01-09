@@ -25,5 +25,9 @@ Pack into game case
 
 ![IMG_0034 (2) (Small)](https://user-images.githubusercontent.com/31633408/148670354-b5c4759e-69de-4962-90b6-6cd70ce64744.JPG)
 
+Close up case
+
+![IMG_0037 (2) (Small)](https://user-images.githubusercontent.com/31633408/148670440-c62eda9e-bd54-4180-bef2-4df3ff5f2fd1.JPG)
+
 
 
