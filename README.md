@@ -3,9 +3,10 @@ Lockbox which will open when you win playing a game loaded on a TTGO_T_Display E
 
 **Locked Box**
 
-![IMG_0016 (Small)](https://user-images.githubusercontent.com/31633408/148635948-b66b3348-81f6-4862-84bb-fde67f2ce687.JPG)
+![lockbox (Small)](https://user-images.githubusercontent.com/31633408/149814456-dd4723f1-f1f8-4caa-98be-210dbe2f7d43.jpg)
 
-**Play Game - win level 1 to open**
+**Play Game - win level 1 to open**!
+
 
 ![IMG_0028 (Small)](https://user-images.githubusercontent.com/31633408/148669408-a870b73a-71be-4c1f-893e-e46b4ec74aa1.JPG)
 
