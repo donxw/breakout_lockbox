@@ -16,11 +16,11 @@
 TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 
 // main splashscreen - uncomment only one.  These are 135x240 png files converted to C format using http://rinkydinkelectronics.com/t_imageconverter565.php
-#include "alex.h"  //15,60  Servo lock and unlock positions - obtain by experiment
+//#include "alex.h"  //15,60  Servo lock and unlock positions - obtain by experiment
 //#include "avery.h" //5, 55
 //#include "hana.h"  //25,75
 //#include "james.h"  //7, 55
-//#include "kev.h"
+#include "kev.h"
 //#include "lark.h"
 //#include "linz.h"  //5,48
 //#include "mel.h"  //0, 55
@@ -45,22 +45,31 @@ int servoPin = 12;
 #define purple 0xFB9B
 
 // Variable used in the game
+
+//ball position
 float ys = 1;
 float x = random(30, 100); //coordinates of ball
 float y = 70;
 int ny = y; //coordinates of previous position
 int nx = x;
+
+//paddle position
 float px = 45; //67 is the center position of the player
 int   pxn = px;
-int vrije[2] = {1, -1};
+
+//block postitions, colors
 int enx[16] = {8, 33, 58, 83, 108, 8, 33, 58, 83, 108, 22, 47, 72, 97, 47, 72};
 int eny[16] = {37, 37, 37, 37, 37, 45, 45, 45, 45, 45, 53, 53, 53, 53, 61, 61};
 int enc[16] = {TFT_RED, TFT_RED, TFT_RED, TFT_RED, TFT_RED, TFT_GREEN, TFT_GREEN, TFT_GREEN, TFT_GREEN, TFT_GREEN, orange, orange, orange, orange, lightblue, lightblue};
+
 int score = 0;
 int level = 1;
+
+int vrije[2] = {1, -1};
 float amount[4] = {0.25, 0.50, 0.75, 1};
 float xs = amount[random(4)] * vrije[random(2)];
-int fase = 0;
+
+int fase = 0;  // 0 intial setup, 1 play, 2 game over
 int pom = 0;
 int gameSpeed = 13000;  // higher number for slower ball
 
@@ -104,10 +113,10 @@ void setup(void) {
 ***********************************************************/
 void loop() {
 
-  if (fase == 0)
+  if (fase == 0)  //initial setup
   {
 
-    if (digitalRead(0) == 0 || digitalRead(35) == 0)
+    if (digitalRead(0) == 0 || digitalRead(35) == 0)  //wait for button push
     {
       if (pom == 0) {
         tft.fillScreen(TFT_BLACK);
@@ -133,75 +142,85 @@ void loop() {
     }
   }
 
-  if (fase == 1) {
+  if (fase == 1) {   //game in play
 
     if (y != ny) {
-      tft.fillEllipse(nx, ny, 2, 2, TFT_BLACK);   //Erase the ball
+      tft.fillEllipse(nx, ny, 2, 2, TFT_BLACK);   // Erase previous ball
       ny = y;
       nx = x;
     }
 
     if (int(px) != pxn) {
-      tft.fillRect(pxn, 234, 24, 4, TFT_BLACK); //Delete Player
+      tft.fillRect(pxn, 234, 24, 4, TFT_BLACK); // Erase previous paddle
       pxn = px;
     }
 
-    //spe=spe+1; // comment out
+    // handle paddle left right motion
 
-    if (px >= 2 && px <= 109) {
-      if (digitalRead(0) == 0)
+    if (px >= 2 && px <= 109) {  // while paddle is between 2 and 109
+      if (digitalRead(0) == 0)  // move paddle left
         px = px - 1;
-      if (digitalRead(35) == 0)
+      if (digitalRead(35) == 0)  // move paddle right
         px = px + 1;
     }
 
-    if (px <= 3)
+    if (px <= 3)  // limit paddle left position to 4
       px = 4;
 
-    if (px >= 108)
+    if (px >= 108)  // limit paddle right position to 107
       px = 107;
 
-    if (y > 232 && x > px && x < px + 24) {
+
+    // handle bouncing ball off paddle
+    if (y > 232 && x > px && x < px + 24) {  //if ball is at the paddle and ball position is within the paddle width, change vertical direction and determine new x delta position
       ys = ys * -1;
       xs = amount[random(4)] * vrije[random(2)];
     }
 
+    // handle ball hitting blocks - compare ball position to each of the 16 blocks
     for (int j = 0; j < 16; j++)
     {
-      if (x > enx[j] && x < enx[j] + 20 && y > eny[j] && y < eny[j] + 5)
+      if (x > enx[j] && x < enx[j] + 20 && y > eny[j] && y < eny[j] + 5)  //check for collision of block (enx, eny) adjusted for block size with ball (x,y)
       {
-        tft.fillRect(enx[j], eny[j], 20, 4, TFT_BLACK);
-        enx[j] = 400;
+        tft.fillRect(enx[j], eny[j], 20, 4, TFT_BLACK);  // erase block
+        enx[j] = 400;  //move block off screen
+        // reverse ball y direction and set new x delta position
         ys = ys * -1;
         xs = amount[random(4)] * vrije[random(2)];
+        // increment score and update screen
         score = score + 1;
         tft.setCursor(0, 0, 2);
         tft.println("SCORE " + String(score));
       }
     }
 
+    // if ball hit top, change direction
     if (y < 21)
       ys = ys * -1.00;
 
+    // if ball hits bottom, game over
     if (y > 240)
       fase = fase + 1;
 
+    // if ball hits right wall, change direction
     if (x >= 130)
       xs = xs * -1.00;
 
+    // if ball hits left wall, change direction
     if (x <= 4)
       xs = xs * -1.00;
 
     // update blocks
     for (int i = 0; i < 16; i++) tft.fillRect(enx[i], eny[i], 20, 4, enc[i]);
 
-    // draw ball
+    // draw new ball position
     tft.fillEllipse(int(x), y, 2, 2, TFT_WHITE);
 
-    // change coordinates of ball
+    // compute new ball coordinates
     y = y + ys;
     x = x + xs;
 
+    // draw new paddle
     tft.fillRect(px, 234, 24, 4, TFT_WHITE);
 
     if (score == 16 || score == 33 || score == 50 || score == 67 || score == 84 || score == 101 || score == 118 || score == 135 || score == 152 || score == 169)
